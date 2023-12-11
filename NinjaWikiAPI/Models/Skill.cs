@@ -12,6 +12,6 @@ namespace NinjaWikiAPI.Models
         public virtual Category Category { get; set; }
         public virtual Rank Rank { get; set; }
 
-        public virtual IList<SkillsNinja> SkillsNinja { get; set; }
+        public virtual IEnumerable<SkillsNinja> SkillsNinja { get; set; }
     }
 }

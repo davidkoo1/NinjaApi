@@ -8,7 +8,7 @@ namespace NinjaWikiAPI.Models
         public string Name { get; set; }
         public string Symbol { get; set; }
 
-        public virtual IList<Ninja> Ninjas { get; set; }
-        public virtual IList<Skill> Skills { get; set; }
+        public virtual IEnumerable<Ninja> Ninjas { get; set; }
+        public virtual IEnumerable<Skill> Skills { get; set; }
     }
 }

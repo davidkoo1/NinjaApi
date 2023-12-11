@@ -8,8 +8,8 @@ namespace NinjaWikiAPI.Models
         public string Name { get; set; }
         public string? Description { get; set; }
 
-        public virtual IList<Ninja> Ninjas { get; set; }
-        public virtual IList<Battle> Battles { get; set; }
+        public virtual IEnumerable<Ninja> Ninjas { get; set; }
+        public virtual IEnumerable<Battle> Battles { get; set; }
 
     }
 }
