@@ -9,6 +9,9 @@ namespace NinjaWikiAPI.Helper
         public MappingProfiles()
         {
             CreateMap<Clan, ClanDto>();
+            CreateMap<ClanDto, Clan>();
+
+
         }
     }
 }
