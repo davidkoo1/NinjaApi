@@ -113,7 +113,7 @@ namespace NinjaWikiAPI.Controllers
             {
                 return Ok(new BaseResponsed { errorCode = -1, errorMessage = ex.Message, errorName = "Error" });
             }
-           
+
         }
 
 

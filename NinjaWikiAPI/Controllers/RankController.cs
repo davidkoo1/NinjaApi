@@ -3,34 +3,33 @@ using Microsoft.AspNetCore.Mvc;
 using NinjaWikiAPI.Dto;
 using NinjaWikiAPI.Interface;
 using NinjaWikiAPI.Models;
+using NinjaWikiAPI.Repository;
 
 namespace NinjaWikiAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NinjaController : Controller
+    public class RankController : Controller
     {
-        private readonly INinjaRepository _ninjaRepository;
-        private readonly IClanRepository _clanRepository;
+        private readonly IRankRepository _rankRepository;
         private readonly IMapper _mapper;
 
-        public NinjaController(INinjaRepository ninjaRepository, IMapper mapper, IClanRepository clanRepository)
+        public RankController(IRankRepository rankRepository, IMapper mapper)
         {
-            _ninjaRepository = ninjaRepository;
+            _rankRepository = rankRepository;
             _mapper = mapper;
-            _clanRepository = clanRepository;
         }
 
+
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<NinjaClanDto>))]
-        public async Task<IActionResult> GetNinjas()
+        [ProducesResponseType(200, Type = typeof(IEnumerable<RankDto>))]
+        public async Task<IActionResult> GetRanks()
         {
             try
             {
+                var ranks = _mapper.Map<List<RankDto>>(await _rankRepository.GetRanks());
 
-                var ninjas = _mapper.Map<List<NinjaClanDto>>(await _ninjaRepository.GetNinjas());
-
-                if (ninjas == null)
+                if (ranks == null)
                 {
                     return NotFound();
                 }
@@ -39,7 +38,7 @@ namespace NinjaWikiAPI.Controllers
                     return BadRequest(ModelState);
 
 
-                return Ok(ninjas);
+                return Ok(ranks);
             }
             catch (Exception ex)
             {
@@ -47,59 +46,51 @@ namespace NinjaWikiAPI.Controllers
             }
         }
 
-        [HttpGet("{ninjaId}")]
-        [ProducesResponseType(200, Type = typeof(NinjaClanDto))]
-        public async Task<IActionResult> GetNinja(int ninjaId)
+        [HttpGet("{rankId}")]
+        [ProducesResponseType(200, Type = typeof(RankDto))]
+        public async Task<IActionResult> GetRank(int rankId)
         {
             try
             {
-                if (!_ninjaRepository.NinjaExists(ninjaId))
+                if (!_rankRepository.RankExists(rankId))
                     return NotFound();
 
-                var ninja = _mapper.Map<NinjaClanDto>(await _ninjaRepository.GetNinjaById(ninjaId));
+                var rank = _mapper.Map<RankDto>(await _rankRepository.GetRankById(rankId));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                return Ok(ninja);
+                return Ok(rank);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal Server Error");
             }
-
-
         }
 
-
-        [HttpPost("{clanId}")]
+        [HttpPost]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
-        public async Task<IActionResult> CreateNinja(int clanId, [FromBody] NinjaDto ninjaCreate)
+        public async Task<IActionResult> CreateNinja([FromBody] RankDto rankCreate)
         {
             try
             {
-                if (ninjaCreate == null)
+                if (rankCreate == null)
                     return BadRequest(ModelState);
 
-                var ninjas = await _ninjaRepository.GetNinjas();
-                var ninja = ninjas.FirstOrDefault(c => c.Name.Trim().ToLower() == ninjaCreate.Name.TrimEnd().ToLower());
-                if (ninja != null)
+                var ranks = await _rankRepository.GetRanks();
+                var rank = ranks.FirstOrDefault(r => r.Symbol == rankCreate.Symbol);
+                if (rank != null)
                 {
-                    ModelState.AddModelError("", "Ninja alredy exists");
+                    ModelState.AddModelError("", "Rank alredy exists");
                     return StatusCode(422, ModelState);
                 }
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var ninjaMap = _mapper.Map<Ninja>(ninjaCreate);
+                var rankMap = _mapper.Map<Rank>(rankCreate);
 
-                if (!_clanRepository.ClanExists(clanId))
-                    return NotFound();
-
-                ninjaMap.Clan = await _clanRepository.GetClanById(clanId);
-
-                if (!_ninjaRepository.Insert(ninjaMap))
+                if (!_rankRepository.Insert(rankMap))
                 {
                     ModelState.AddModelError("", "Something went wrong while savin");
                     return StatusCode(500, ModelState);
@@ -114,26 +105,25 @@ namespace NinjaWikiAPI.Controllers
         }
 
 
-
-        [HttpPut("{ninjaId}")]
+        [HttpPut("{rankId}")]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
-        public IActionResult UpdateNinja(int ninjaId, [FromBody] NinjaDto updateNinja)
+        public IActionResult UpdateRank(int rankId, [FromBody] RankDto updateRank)
         {
             try
             {
-                if (updateNinja == null)
-                    return Ok(new BaseResponsed { errorCode = 2, errorMessage = "NinjaNull", errorName = "Error" });
-                if (ninjaId != updateNinja.Id)
-                    return Ok(new BaseResponsed { errorCode = 1, errorMessage = "CompareNinjaID", errorName = "Error" });
-                if (!_ninjaRepository.NinjaExists(ninjaId))
+                if (updateRank == null)
+                    return Ok(new BaseResponsed { errorCode = 2, errorMessage = "RankNull", errorName = "Error" });
+                if (rankId != updateRank.Id)
+                    return Ok(new BaseResponsed { errorCode = 1, errorMessage = "CompareRankID", errorName = "Error" });
+                if (!_rankRepository.RankExists(rankId))
                     return NotFound();
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var ninjaMap = _mapper.Map<Ninja>(updateNinja);
+                var rankMap = _mapper.Map<Rank>(updateRank);
 
-                if (!_ninjaRepository.Update(ninjaMap))
+                if (!_rankRepository.Update(rankMap))
                 {
                     return Ok(new BaseResponsed { errorCode = -1, errorMessage = "Something went wrong updating category", errorName = "Error" });
                 }
@@ -148,21 +138,21 @@ namespace NinjaWikiAPI.Controllers
         }
 
 
-        [HttpDelete("{ninjaId}")]
+        [HttpDelete("{rankId}")]
         /*[ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]*/
-        public async Task<IActionResult> DeleteClan(int ninjaId)
+        public async Task<IActionResult> DeleteClan(int rankId)
         {
-            if (!_ninjaRepository.NinjaExists(ninjaId))
+            if (!_rankRepository.RankExists(rankId))
                 return NotFound();
 
-            var ninjaToDelete = await _ninjaRepository.GetNinjaById(ninjaId);
+            var rankToDelete = await _rankRepository.GetRankById(rankId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_ninjaRepository.Delete(ninjaToDelete))
+            if (!_rankRepository.Delete(rankToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting category");
             }
@@ -170,6 +160,5 @@ namespace NinjaWikiAPI.Controllers
             return NoContent();
 
         }
-
     }
 }
