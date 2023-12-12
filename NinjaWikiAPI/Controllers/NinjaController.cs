@@ -24,13 +24,13 @@ namespace NinjaWikiAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<NinjaDto>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<NinjaClanDto>))]
         public async Task<IActionResult> GetNinjas()
         {
             try
             {
 
-                var ninjas = _mapper.Map<List<NinjaDto>>(await _ninjaRepository.GetNinjas());
+                var ninjas = _mapper.Map<List<NinjaClanDto>>(await _ninjaRepository.GetNinjas());
 
                 if (ninjas == null)
                 {
@@ -50,7 +50,7 @@ namespace NinjaWikiAPI.Controllers
         }
 
         [HttpGet("{ninjaId}")]
-        [ProducesResponseType(200, Type = typeof(NinjaDto))]
+        [ProducesResponseType(200, Type = typeof(NinjaClanDto))]
         public async Task<IActionResult> GetNinja(int ninjaId)
         {
             try
@@ -58,7 +58,7 @@ namespace NinjaWikiAPI.Controllers
                 if (!_ninjaRepository.NinjaExists(ninjaId))
                     return NotFound();
 
-                var ninja = _mapper.Map<NinjaDto>(await _ninjaRepository.GetNinjaById(ninjaId));
+                var ninja = _mapper.Map<NinjaClanDto>(await _ninjaRepository.GetNinjaById(ninjaId));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);

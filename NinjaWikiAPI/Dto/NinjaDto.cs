@@ -8,8 +8,5 @@ namespace NinjaWikiAPI.Dto
         public string Name { get; set; }
         public string? Description { get; set; }
         public bool IsTraitor { get; set; }
-
-
-        //public virtual ClanDto Clan { get; set; }
     }
 }

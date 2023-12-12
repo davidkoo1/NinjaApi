@@ -23,7 +23,7 @@ namespace NinjaWikiAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ClanDto>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ClanNinjasDto>))]
         public async Task<IActionResult> GetClans()
         {
             try
@@ -31,7 +31,7 @@ namespace NinjaWikiAPI.Controllers
                 _logger.LogInformation("Getting clans...");
 
 
-                var clans = _mapper.Map<List<ClanDto>>(await _clanRepository.GetClans());
+                var clans = _mapper.Map<List<ClanNinjasDto>>(await _clanRepository.GetClans());
 
                 if (clans == null)
                 {
@@ -54,7 +54,7 @@ namespace NinjaWikiAPI.Controllers
         }
 
         [HttpGet("{clanId}")]
-        [ProducesResponseType(200, Type = typeof(ClanDto))]
+        [ProducesResponseType(200, Type = typeof(ClanNinjasDto))]
         public async Task<IActionResult> GetClan(int clanId)
         {
             try
@@ -62,7 +62,7 @@ namespace NinjaWikiAPI.Controllers
                 if (!_clanRepository.ClanExists(clanId))
                     return NotFound();
 
-                var clan = _mapper.Map<ClanDto>(await _clanRepository.GetClanById(clanId));
+                var clan = _mapper.Map<ClanNinjasDto>(await _clanRepository.GetClanById(clanId));
 
 
                 if (!ModelState.IsValid)

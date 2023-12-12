@@ -8,11 +8,17 @@ namespace NinjaWikiAPI.Helper
     {
         public MappingProfiles()
         {
+            CreateMap<Clan, ClanNinjasDto>();
+            //CreateMap<ClanNinjasDto, Clan>();
+
             CreateMap<Clan, ClanDto>();
             CreateMap<ClanDto, Clan>();
 
             CreateMap<Ninja, NinjaDto>();
             CreateMap<NinjaDto, Ninja>();
+
+            CreateMap<Ninja, NinjaClanDto>();
+            //CreateMap<NinjaClanDto, Ninja>();
         }
     }
 }
