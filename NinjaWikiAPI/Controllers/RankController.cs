@@ -45,7 +45,7 @@ namespace NinjaWikiAPI.Controllers
                 return StatusCode(500, "Internal Server Error");
             }
         }
-
+        
         [HttpGet("{rankId}")]
         [ProducesResponseType(200, Type = typeof(RankDto))]
         public async Task<IActionResult> GetRank(int rankId)
@@ -56,6 +56,28 @@ namespace NinjaWikiAPI.Controllers
                     return NotFound();
 
                 var rank = _mapper.Map<RankDto>(await _rankRepository.GetRankById(rankId));
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(rank);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
+        
+        [HttpGet("Ninja/{ninjaId}")] //{ninjaId}/{rankId?} [FromQuery]newElementId
+        [ProducesResponseType(200, Type = typeof(RankDto))]
+        public async Task<IActionResult> GetNinjaRank(int ninjaId)
+        {
+            try
+            {
+               /* if (!_rankRepository.RankExists(rankId))
+                    return NotFound();
+               */
+                var rank = (await _rankRepository.GetRankByNinja(ninjaId));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);

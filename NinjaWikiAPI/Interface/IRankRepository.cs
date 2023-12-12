@@ -7,6 +7,8 @@ namespace NinjaWikiAPI.Interface
         Task<IEnumerable<Rank>> GetRanks();
         Task<Rank> GetRankById(int id);
 
+        Task<Rank> GetRankByNinja(int ninjaId);
+
         bool RankExists(int id);
 
         bool Insert(Rank rank);
