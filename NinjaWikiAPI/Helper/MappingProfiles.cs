@@ -11,7 +11,8 @@ namespace NinjaWikiAPI.Helper
             CreateMap<Clan, ClanDto>();
             CreateMap<ClanDto, Clan>();
 
-
+            CreateMap<Ninja, NinjaDto>();
+            CreateMap<NinjaDto, Ninja>();
         }
     }
 }

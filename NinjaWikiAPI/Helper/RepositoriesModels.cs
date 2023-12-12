@@ -8,6 +8,7 @@ namespace NinjaWikiAPI.Helper
         public RepositoriesModels(IServiceCollection services)
         {
             services.AddTransient<IClanRepository, ClanRepository>();
+            services.AddTransient<INinjaRepository, NinjaRepository>();
         }
     }
 }

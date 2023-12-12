@@ -11,11 +11,11 @@ namespace NinjaWikiAPI.Models
         public bool IsTraitor { get; set; }
 
 
-        public virtual Clan Clan { get; set; }
-        public virtual Village Village { get; set; }
-        public virtual Rank Rank { get; set; }
+        public virtual Clan? Clan { get; set; }
+        public virtual Village? Village { get; set; }
+        public virtual Rank? Rank { get; set; }
 
-        public virtual IEnumerable<NinjaBattles> NinjaBattles { get; set; }
-        public virtual IEnumerable<SkillsNinja> SkillsNinja { get; set;}
+        public virtual IEnumerable<NinjaBattles>? NinjaBattles { get; set; }
+        public virtual IEnumerable<SkillsNinja>? SkillsNinja { get; set;}
     }
 }

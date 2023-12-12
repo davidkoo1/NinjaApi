@@ -143,9 +143,9 @@ namespace NinjaWikiAPI.Controllers
 
 
         [HttpDelete("{clanId}")]
-        [ProducesResponseType(400)]
+        /*[ProducesResponseType(400)]
         [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(404)]*/
         public async Task<IActionResult> DeleteClan(int clanId)
         {
             if (!_clanRepository.ClanExists(clanId))
