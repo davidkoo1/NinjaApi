@@ -13,12 +13,14 @@ namespace NinjaWikiAPI.Controllers
     public class NinjaController : Controller
     {
         private readonly INinjaRepository _ninjaRepository;
+        private readonly IClanRepository _clanRepository;
         private readonly IMapper _mapper;
 
-        public NinjaController(INinjaRepository ninjaRepository, IMapper mapper)
+        public NinjaController(INinjaRepository ninjaRepository, IMapper mapper, IClanRepository clanRepository)
         {
             _ninjaRepository = ninjaRepository;
             _mapper = mapper;
+            _clanRepository = clanRepository;
         }
 
         [HttpGet]
@@ -72,9 +74,9 @@ namespace NinjaWikiAPI.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("{clanId}")]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
-        public async Task<IActionResult> CreateNinja([FromBody] NinjaDto ninjaCreate)
+        public async Task<IActionResult> CreateNinja(int clanId, [FromBody] NinjaDto ninjaCreate)
         {
             try
             {
@@ -93,6 +95,11 @@ namespace NinjaWikiAPI.Controllers
                     return BadRequest(ModelState);
 
                 var ninjaMap = _mapper.Map<Ninja>(ninjaCreate);
+
+                if (!_clanRepository.ClanExists(clanId))
+                    return NotFound();
+
+                ninjaMap.Clan = await _clanRepository.GetClanById(clanId);
 
                 if (!_ninjaRepository.Insert(ninjaMap))
                 {

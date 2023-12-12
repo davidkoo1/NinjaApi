@@ -20,9 +20,9 @@ namespace NinjaWikiAPI.Repository
             return Save();
         }
 
-        public async Task<Ninja> GetNinjaById(int id) => await _dataContext.Ninjas.FirstOrDefaultAsync(n => n.Id == id);
+        public async Task<Ninja> GetNinjaById(int id) => await _dataContext.Ninjas.Include(c => c.Clan).FirstOrDefaultAsync(n => n.Id == id);
 
-        public async Task<IEnumerable<Ninja>> GetNinjas() => await _dataContext.Ninjas.OrderBy(n => n.Id).ToListAsync();    //ByRank
+        public async Task<IEnumerable<Ninja>> GetNinjas() => await _dataContext.Ninjas.OrderBy(n => n.Id).Include(c => c.Clan).ToListAsync();    //ByRank
 
         public bool Insert(Ninja ninja)
         {

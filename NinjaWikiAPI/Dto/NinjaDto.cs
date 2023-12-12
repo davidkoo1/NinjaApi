@@ -10,6 +10,6 @@ namespace NinjaWikiAPI.Dto
         public bool IsTraitor { get; set; }
 
 
-       // public virtual ClanDto Clan { get; set; }
+        //public virtual ClanDto Clan { get; set; }
     }
 }

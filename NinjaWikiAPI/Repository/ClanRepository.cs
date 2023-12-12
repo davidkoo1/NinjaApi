@@ -22,9 +22,9 @@ namespace NinjaWikiAPI.Repository
             return Save();
         }
 
-        public async Task<Clan> GetClanById(int id) => await _dataContext.Clans.FirstOrDefaultAsync(c => c.Id == id);
+        public async Task<Clan> GetClanById(int id) => await _dataContext.Clans.Include(c => c.Ninjas).FirstOrDefaultAsync(c => c.Id == id);
 
-        public async Task<IEnumerable<Clan>> GetClans() => await _dataContext.Clans.OrderBy(c => c.Name).ToListAsync();
+        public async Task<IEnumerable<Clan>> GetClans() => await _dataContext.Clans.OrderBy(c => c.Name).Include(c => c.Ninjas).ToListAsync();
 
         public bool Insert(Clan clan)
         {

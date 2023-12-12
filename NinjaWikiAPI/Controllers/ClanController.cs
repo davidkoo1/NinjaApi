@@ -64,6 +64,7 @@ namespace NinjaWikiAPI.Controllers
 
                 var clan = _mapper.Map<ClanDto>(await _clanRepository.GetClanById(clanId));
 
+
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
@@ -71,8 +72,7 @@ namespace NinjaWikiAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting clan.");
-                return StatusCode(500, "Internal Server Error");
+                return Ok(new BaseResponsed { errorCode = -1, errorMessage = ex.Message, errorName = "Error" });
             }
 
 
