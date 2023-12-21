@@ -261,3 +261,5 @@ R:\the best уроки от лучшего человека\ASP\NinjaApi\NinjaWi
 R:\the best уроки от лучшего человека\ASP\NinjaApi\NinjaWikiAPI\obj\Debug\net6.0\ref\NinjaWikiAPI.dll
 C:\Users\User\Desktop\NinjaApi\NinjaWikiAPI\bin\Debug\net6.0\AutoMapper.dll
 C:\Users\User\Desktop\NinjaApi\NinjaWikiAPI\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\User\Desktop\NinjaApi\NinjaWikiAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.ReDoc.dll
+C:\Users\User\Desktop\NinjaApi\NinjaWikiAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.Annotations.dll
