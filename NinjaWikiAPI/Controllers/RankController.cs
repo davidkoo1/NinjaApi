@@ -100,7 +100,7 @@ namespace NinjaWikiAPI.Controllers
                     return BadRequest(ModelState);
 
                 var ranks = await _rankRepository.GetRanks();
-                var rank = ranks.FirstOrDefault(r => r.Symbol == rankCreate.Symbol);
+                var rank = ranks.FirstOrDefault(r => r.Symbol.Trim().ToLower() == rankCreate.Symbol.TrimEnd().ToLower());
                 if (rank != null)
                 {
                     ModelState.AddModelError("", "Rank alredy exists");
@@ -164,7 +164,7 @@ namespace NinjaWikiAPI.Controllers
         /*[ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]*/
-        public async Task<IActionResult> DeleteClan(int rankId)
+        public async Task<IActionResult> DeleteRank(int rankId)
         {
             if (!_rankRepository.RankExists(rankId))
                 return NotFound();

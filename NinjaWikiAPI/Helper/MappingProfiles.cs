@@ -30,6 +30,13 @@ namespace NinjaWikiAPI.Helper
             CreateMap<Village, VillageDto>();
             CreateMap<VillageDto, Village>();
 
+            CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryDto, Category>();
+
+
+            CreateMap<Skill, SkillDto>();
+            CreateMap<SkillDto, Skill>();
+
         }
     }
 }

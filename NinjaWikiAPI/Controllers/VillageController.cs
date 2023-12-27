@@ -136,7 +136,7 @@ namespace NinjaWikiAPI.Controllers
                 if (updateVillage == null)
                     return Ok(new BaseResponsed { errorCode = 2, errorMessage = "VillageNull", errorName = "Error" });
                 if (villageId != updateVillage.Id)
-                    return Ok(new BaseResponsed { errorCode = 1, errorMessage = "CompareRankID", errorName = "Error" });
+                    return Ok(new BaseResponsed { errorCode = 1, errorMessage = "CompareVillageID", errorName = "Error" });
                 if (!_villageRepository.VillageExists(villageId))
                     return NotFound();
 
@@ -165,7 +165,7 @@ namespace NinjaWikiAPI.Controllers
         /*[ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]*/
-        public async Task<IActionResult> DeleteClan(int villageId)
+        public async Task<IActionResult> DeleteVillage(int villageId)
         {
             if (!_villageRepository.VillageExists(villageId))
                 return NotFound();
