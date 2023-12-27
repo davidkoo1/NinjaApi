@@ -12,23 +12,32 @@ namespace NinjaWikiAPI.Controllers
     {
         private readonly INinjaRepository _ninjaRepository;
         private readonly IClanRepository _clanRepository;
+        private readonly IRankRepository _rankRepository;
+        private readonly IVillageRepository _villageRepository;
         private readonly IMapper _mapper;
 
-        public NinjaController(INinjaRepository ninjaRepository, IMapper mapper, IClanRepository clanRepository)
+        public NinjaController(IMapper mapper, 
+                               INinjaRepository ninjaRepository, 
+                               IClanRepository clanRepository, 
+                               IRankRepository rankRepository,
+                               IVillageRepository villageRepository)
         {
-            _ninjaRepository = ninjaRepository;
             _mapper = mapper;
+            _ninjaRepository = ninjaRepository;
             _clanRepository = clanRepository;
+            _rankRepository = rankRepository;
+            _villageRepository = villageRepository;
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<NinjaClanDto>))]
-        public async Task<IActionResult> GetNinjas()
+        [ProducesResponseType(200, Type = typeof(IEnumerable<NinjaInfoDto>))]
+        public async Task<IActionResult> GetNinjas(int limit = 100, int offset = 0)
         {
             try
             {
+                limit = Math.Min(Math.Abs(limit), 500);
 
-                var ninjas = _mapper.Map<List<NinjaClanDto>>(await _ninjaRepository.GetNinjas());
+                var ninjas = _mapper.Map<List<NinjaInfoDto>>(await _ninjaRepository.GetNinjas(limit, offset));
 
                 if (ninjas == null)
                 {
@@ -48,7 +57,7 @@ namespace NinjaWikiAPI.Controllers
         }
 
         [HttpGet("{ninjaId}")]
-        [ProducesResponseType(200, Type = typeof(NinjaClanDto))]
+        [ProducesResponseType(200, Type = typeof(NinjaInfoDto))]
         public async Task<IActionResult> GetNinja(int ninjaId)
         {
             try
@@ -56,7 +65,7 @@ namespace NinjaWikiAPI.Controllers
                 if (!_ninjaRepository.NinjaExists(ninjaId))
                     return NotFound();
 
-                var ninja = _mapper.Map<NinjaClanDto>(await _ninjaRepository.GetNinjaById(ninjaId));
+                var ninja = _mapper.Map<NinjaInfoDto>(await _ninjaRepository.GetNinjaById(ninjaId));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -72,16 +81,16 @@ namespace NinjaWikiAPI.Controllers
         }
 
 
-        [HttpPost("{clanId}")]
+        [HttpPost("clanId={clanId}&rankId={rankId}&villageId")]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
-        public async Task<IActionResult> CreateNinja(int clanId, [FromBody] NinjaDto ninjaCreate)
+        public async Task<IActionResult> CreateNinja(int clanId,int rankId, int villageId, [FromBody] NinjaDto ninjaCreate)
         {
             try
             {
                 if (ninjaCreate == null)
                     return BadRequest(ModelState);
 
-                var ninjas = await _ninjaRepository.GetNinjas();
+                var ninjas = await _ninjaRepository.GetNinjas(); //?!
                 var ninja = ninjas.FirstOrDefault(c => c.Name.Trim().ToLower() == ninjaCreate.Name.TrimEnd().ToLower());
                 if (ninja != null)
                 {
@@ -94,10 +103,12 @@ namespace NinjaWikiAPI.Controllers
 
                 var ninjaMap = _mapper.Map<Ninja>(ninjaCreate);
 
-                if (!_clanRepository.ClanExists(clanId))
+                if (!_clanRepository.ClanExists(clanId) && !_rankRepository.RankExists(rankId) && !_villageRepository.VillageExists(villageId))
                     return NotFound();
 
                 ninjaMap.Clan = await _clanRepository.GetClanById(clanId);
+                ninjaMap.Rank = await _rankRepository.GetRankById(rankId);
+                ninjaMap.Village = await _villageRepository.GetVillageById(villageId);
 
                 if (!_ninjaRepository.Insert(ninjaMap))
                 {
@@ -117,7 +128,7 @@ namespace NinjaWikiAPI.Controllers
 
         [HttpPut("{ninjaId}")]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
-        public IActionResult UpdateNinja(int ninjaId, [FromBody] NinjaDto updateNinja)
+        public async Task<IActionResult> UpdateNinja(int ninjaId, [FromBody] NinjaUpdateDto updateNinja) 
         {
             try
             {
@@ -132,6 +143,41 @@ namespace NinjaWikiAPI.Controllers
                     return BadRequest(ModelState);
 
                 var ninjaMap = _mapper.Map<Ninja>(updateNinja);
+                ninjaMap.Clan = await _clanRepository.GetClanById(updateNinja.ClanId);
+                ninjaMap.Rank = await _rankRepository.GetRankById(updateNinja.RankId);
+                ninjaMap.Village = await _villageRepository.GetVillageById(updateNinja.VillageId);
+                if (!_ninjaRepository.Update(ninjaMap))
+                {
+                    return Ok(new BaseResponsed { errorCode = -1, errorMessage = "Something went wrong updating category", errorName = "Error" });
+                }
+
+                return Ok(new BaseResponsed { errorCode = 0, errorName = "noError" });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new BaseResponsed { errorCode = -1, errorMessage = ex.Message, errorName = "CatchError" });
+            }
+
+        }
+
+
+        [HttpPatch("{ninjaId}")]
+        [ProducesResponseType(200, Type = typeof(BaseResponsed))]
+        public IActionResult PatchNinja(int ninjaId, [FromBody] NinjaDto patchNinja)
+        {
+            try
+            {
+                if (patchNinja == null)
+                    return Ok(new BaseResponsed { errorCode = 2, errorMessage = "NinjaNull", errorName = "Error" });
+                if (ninjaId != patchNinja.Id)
+                    return Ok(new BaseResponsed { errorCode = 1, errorMessage = "CompareNinjaID", errorName = "Error" });
+                if (!_ninjaRepository.NinjaExists(ninjaId))
+                    return NotFound();
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var ninjaMap = _mapper.Map<Ninja>(patchNinja);
 
                 if (!_ninjaRepository.Update(ninjaMap))
                 {

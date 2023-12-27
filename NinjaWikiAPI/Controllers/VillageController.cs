@@ -9,27 +9,26 @@ namespace NinjaWikiAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RankController : Controller
+    public class VillageController : Controller
     {
-        private readonly IRankRepository _rankRepository;
+        private readonly IVillageRepository _villageRepository;
         private readonly IMapper _mapper;
 
-        public RankController(IRankRepository rankRepository, IMapper mapper)
+        public VillageController(IVillageRepository villageRepository, IMapper mapper)
         {
-            _rankRepository = rankRepository;
+            _villageRepository = villageRepository;
             _mapper = mapper;
         }
 
-
-        [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<RankDto>))]
-        public async Task<IActionResult> GetRanks()
+        [HttpGet("GetVillages")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<VillageDto>))]
+        public async Task<IActionResult> GetVillages()
         {
             try
             {
-                var ranks = _mapper.Map<List<RankDto>>(await _rankRepository.GetRanks());
+                var villages = _mapper.Map<List<VillageDto>>(await _villageRepository.GetVillages());
 
-                if (ranks == null)
+                if (villages == null)
                 {
                     return NotFound();
                 }
@@ -38,51 +37,52 @@ namespace NinjaWikiAPI.Controllers
                     return BadRequest(ModelState);
 
 
-                return Ok(ranks);
+                return Ok(villages);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal Server Error");
             }
         }
-        
-        [HttpGet("{rankId}")]
-        [ProducesResponseType(200, Type = typeof(RankDto))]
-        public async Task<IActionResult> GetRank(int rankId)
+
+        [HttpGet("{villageId}")]
+        [ProducesResponseType(200, Type = typeof(VillageDto))]
+        public async Task<IActionResult> GetVillage(int villageId)
         {
             try
             {
-                if (!_rankRepository.RankExists(rankId))
+                if (!_villageRepository.VillageExists(villageId))
                     return NotFound();
 
-                var rank = _mapper.Map<RankDto>(await _rankRepository.GetRankById(rankId));
+                var village = _mapper.Map<VillageDto>(await _villageRepository.GetVillageById(villageId));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                return Ok(rank);
+                return Ok(village);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal Server Error");
             }
         }
-        
-        [HttpGet("ByNinjaId/{ninjaId}")] //{ninjaId}/{rankId?} [FromQuery]newElementId
-        [ProducesResponseType(200, Type = typeof(RankDto))]
-        public async Task<IActionResult> GetNinjaRank(int ninjaId)
+
+        [HttpGet("GetVillageByNinjaId/{ninjaId}")] //{ninjaId}/{rankId?} [FromQuery]newElementId
+        [ProducesResponseType(200, Type = typeof(VillageDto))]
+        public async Task<IActionResult> GetNinjaVillage(int ninjaId)
         {
             try
             {
-               /* if (!_rankRepository.RankExists(rankId))
-                    return NotFound();
-               */
-                var rank = _mapper.Map<RankDto>(await _rankRepository.GetRankByNinja(ninjaId));
+                /*NInja
+                 if (!_villageRepository.VillageExists(rankId))
+                     return NotFound();
+                */
+                var village = _mapper.Map<VillageDto>(await _villageRepository.GetVillageByNinja(ninjaId));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                return Ok(rank);
+                return Ok(village);
             }
             catch (Exception ex)
             {
@@ -92,27 +92,27 @@ namespace NinjaWikiAPI.Controllers
 
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
-        public async Task<IActionResult> CreateRank([FromBody] RankDto rankCreate)
+        public async Task<IActionResult> CreateVillage([FromBody] VillageDto villageCreate)
         {
             try
             {
-                if (rankCreate == null)
+                if (villageCreate == null)
                     return BadRequest(ModelState);
 
-                var ranks = await _rankRepository.GetRanks();
-                var rank = ranks.FirstOrDefault(r => r.Symbol == rankCreate.Symbol);
-                if (rank != null)
+                var villages = await _villageRepository.GetVillages();
+                var village = villages.FirstOrDefault(r => r.Name == villageCreate.Name);
+                if (village != null)
                 {
-                    ModelState.AddModelError("", "Rank alredy exists");
+                    ModelState.AddModelError("", "Village alredy exists");
                     return StatusCode(422, ModelState);
                 }
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var rankMap = _mapper.Map<Rank>(rankCreate);
+                var villageMap = _mapper.Map<Village>(villageCreate);
 
-                if (!_rankRepository.Insert(rankMap))
+                if (!_villageRepository.Insert(villageMap))
                 {
                     ModelState.AddModelError("", "Something went wrong while savin");
                     return StatusCode(500, ModelState);
@@ -127,25 +127,25 @@ namespace NinjaWikiAPI.Controllers
         }
 
 
-        [HttpPut("{rankId}")]
+        [HttpPut("{villageId}")]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
-        public IActionResult UpdateRank(int rankId, [FromBody] RankDto updateRank)
+        public IActionResult UpdateVillage(int villageId, [FromBody] VillageDto updateVillage)
         {
             try
             {
-                if (updateRank == null)
-                    return Ok(new BaseResponsed { errorCode = 2, errorMessage = "RankNull", errorName = "Error" });
-                if (rankId != updateRank.Id)
+                if (updateVillage == null)
+                    return Ok(new BaseResponsed { errorCode = 2, errorMessage = "VillageNull", errorName = "Error" });
+                if (villageId != updateVillage.Id)
                     return Ok(new BaseResponsed { errorCode = 1, errorMessage = "CompareRankID", errorName = "Error" });
-                if (!_rankRepository.RankExists(rankId))
+                if (!_villageRepository.VillageExists(villageId))
                     return NotFound();
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var rankMap = _mapper.Map<Rank>(updateRank);
+                var villageMap = _mapper.Map<Village>(updateVillage);
 
-                if (!_rankRepository.Update(rankMap))
+                if (!_villageRepository.Update(villageMap))
                 {
                     return Ok(new BaseResponsed { errorCode = -1, errorMessage = "Something went wrong updating category", errorName = "Error" });
                 }
@@ -160,21 +160,22 @@ namespace NinjaWikiAPI.Controllers
         }
 
 
-        [HttpDelete("{rankId}")]
+
+        [HttpDelete("{villageId}")]
         /*[ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]*/
-        public async Task<IActionResult> DeleteClan(int rankId)
+        public async Task<IActionResult> DeleteClan(int villageId)
         {
-            if (!_rankRepository.RankExists(rankId))
+            if (!_villageRepository.VillageExists(villageId))
                 return NotFound();
 
-            var rankToDelete = await _rankRepository.GetRankById(rankId);
+            var villageToDelete = await _villageRepository.GetVillageById(villageId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_rankRepository.Delete(rankToDelete))
+            if (!_villageRepository.Delete(villageToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting category");
             }
@@ -182,5 +183,6 @@ namespace NinjaWikiAPI.Controllers
             return NoContent();
 
         }
+
     }
 }

@@ -10,6 +10,7 @@ namespace NinjaWikiAPI.Helper
             services.AddTransient<IClanRepository, ClanRepository>();
             services.AddTransient<INinjaRepository, NinjaRepository>();
             services.AddTransient<IRankRepository, RankRepository>();
+            services.AddTransient<IVillageRepository, VillageRepository>();
         }
     }
 }

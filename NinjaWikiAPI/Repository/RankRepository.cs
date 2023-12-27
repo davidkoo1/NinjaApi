@@ -22,7 +22,7 @@ namespace NinjaWikiAPI.Repository
 
         public async Task<Rank> GetRankById(int id) => await _dataContext.Ranks.FirstOrDefaultAsync(r => r.Id == id);
 
-        public async Task<Rank> GetRankByNinja(int ninjaId) => await _dataContext.Ninjas.Select(r => r.Rank).FirstOrDefaultAsync(n => n.Id == ninjaId);
+        public async Task<Rank> GetRankByNinja(int ninjaId) => await _dataContext.Ninjas.Where(n => n.Id == ninjaId).Select(n => n.Rank).FirstOrDefaultAsync();
 
         public async Task<IEnumerable<Rank>> GetRanks() => await _dataContext.Ranks.ToListAsync();
 

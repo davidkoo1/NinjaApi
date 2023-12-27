@@ -1,6 +1,6 @@
 ﻿namespace NinjaWikiAPI.Dto
 {
-    public class NinjaClanDto
+    public class NinjaInfoDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -9,5 +9,7 @@
 
 
         public virtual ClanDto Clan { get; set; }
+        public virtual RankDto Rank { get; set; }
+        public virtual VillageDto Village { get; set; }
     }
 }

@@ -17,12 +17,19 @@ namespace NinjaWikiAPI.Helper
             CreateMap<Ninja, NinjaDto>();
             CreateMap<NinjaDto, Ninja>();
 
-            CreateMap<Ninja, NinjaClanDto>();
+            //CreateMap<Ninja, NinjaUpdateDto>();
+            CreateMap<NinjaUpdateDto, Ninja>();
+
+            CreateMap<Ninja, NinjaInfoDto>();
             //CreateMap<NinjaClanDto, Ninja>();
 
 
             CreateMap<Rank, RankDto>();
             CreateMap<RankDto, Rank>();
+
+            CreateMap<Village, VillageDto>();
+            CreateMap<VillageDto, Village>();
+
         }
     }
 }

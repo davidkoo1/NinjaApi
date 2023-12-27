@@ -3,7 +3,7 @@
     "NinjaWikiAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api-docs",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
