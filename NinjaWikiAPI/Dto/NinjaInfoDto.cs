@@ -11,5 +11,6 @@
         public virtual ClanDto Clan { get; set; }
         public virtual RankDto Rank { get; set; }
         public virtual VillageDto Village { get; set; }
+        public virtual List<SkillDto> Skills { get; set; }
     }
 }

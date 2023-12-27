@@ -66,7 +66,6 @@ namespace NinjaWikiAPI.Controllers
                     return NotFound();
 
                 var ninja = _mapper.Map<NinjaInfoDto>(await _ninjaRepository.GetNinjaById(ninjaId));
-
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
@@ -81,7 +80,7 @@ namespace NinjaWikiAPI.Controllers
         }
 
 
-        [HttpPost("clanId={clanId}&rankId={rankId}&villageId")]
+        [HttpPost("clanId={clanId}&rankId={rankId}&villageId={villageId}")]
         [ProducesResponseType(200, Type = typeof(BaseResponsed))]
         public async Task<IActionResult> CreateNinja(int clanId,int rankId, int villageId, [FromBody] NinjaDto ninjaCreate)
         {
