@@ -36,6 +36,7 @@ namespace NinjaWikiAPI.Helper
 
             CreateMap<Skill, SkillDto>();
             CreateMap<SkillDto, Skill>();
+            CreateMap<SkillUpdateDto, Skill>();
 
         }
     }

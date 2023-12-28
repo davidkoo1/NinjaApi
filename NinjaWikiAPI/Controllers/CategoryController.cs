@@ -70,7 +70,7 @@ namespace NinjaWikiAPI.Controllers
         }
 
         [HttpGet("GetSkillsBy/{categoryId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<SkillDto>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<SkillUpdateDto>))]
         public async Task<IActionResult> GetSkills(int categoryId)
         {
             try
@@ -78,7 +78,7 @@ namespace NinjaWikiAPI.Controllers
                 if (!_categoryRepository.CategoryExists(categoryId))
                     return NotFound();
 
-                var skills = _mapper.Map<List<SkillDto>>(await _categoryRepository.GetSkillsByCategory(categoryId));
+                var skills = _mapper.Map<List<SkillUpdateDto>>(await _categoryRepository.GetSkillsByCategory(categoryId));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);

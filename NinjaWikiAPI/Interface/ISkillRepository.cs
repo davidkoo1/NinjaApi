@@ -4,6 +4,16 @@ namespace NinjaWikiAPI.Interface
 {
     public interface ISkillRepository
     {
+        //GetSkills by category
+        //GetSkills by rank
+        //GetCategory by skill ??
+        //GetRank by skill
+
+        //SkillNinja Post
+        //Get ninjas by skill
+        //Get skills by ninja
+        //GetSkill(TotalNinja)
+        //ButtleTotalNinja, GroupByClan
         Task<IEnumerable<Skill>> GetSkills();
         Task<Skill> GetSkillById(int id);
 
